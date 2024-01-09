@@ -3,23 +3,36 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        String text = "discours.txt";
-        CoordinateurNode coordinateur = new CoordinateurNode();
-        coordinateur.setTextChunks(Splitter.splitText(text));
-        // Définir le nombre de MapTask et ReduceTask souhaité
-        int numMapTasks = 5;
-        int numReduceTasks = 3;
+        // Enregistre le temps de début
+        long startTime = System.currentTimeMillis();
 
-        coordinateur.assignMapTasks(numMapTasks);
-        ArrayList<Map<String,Integer>> resultsMapping = coordinateur.executeMapTasks();
-        
-        coordinateur.assignReduceTasks(numReduceTasks);
-        ArrayList<Map<String,Integer>> resultsReducing=coordinateur.executeReduceTasks(resultsMapping);
+        try {
+            String text = "lesmiserables.txt";
+            CoordinateurNode coordinateur = new CoordinateurNode();
 
-        ArrayList<Map<String, Integer>> results = coordinateur.aggregateResults(resultsReducing);
-        // Afficher ou utiliser les résultats selon tes besoins
-        System.out.println(results);
+            // Définir le nombre de MapTask et ReduceTask souhaité
+            int numMapTasks = 4;
+            int numReduceTasks = 4;
+
+            coordinateur.setTextChunks(Splitter.splitText(text,numMapTasks));
+            coordinateur.assignMapTasks(numMapTasks);
+            ArrayList<Map<String, Integer>> resultsMapping = coordinateur.executeMapTasks();
+
+            coordinateur.assignReduceTasks(numReduceTasks);
+            ArrayList<Map<String, Integer>> resultsReducing = coordinateur.executeReduceTasks(resultsMapping);
+
+            ArrayList<Map<String, Integer>> results = coordinateur.aggregateResults(resultsReducing);
+
+            // Afficher le dictionnaire
+            System.out.println(results);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            // Enregistre le temps de fin
+            long endTime = System.currentTimeMillis();
+
+            // Calcule et affiche la différence
+            System.out.println("Temps d'exécution: " + (endTime - startTime) + " millisecondes");
+        }
     }
-
-
 }
