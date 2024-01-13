@@ -5,9 +5,7 @@ import java.util.regex.Pattern;
 public class MapTask {
     public Map<String, Integer> execute(String chunk) {
         Map<String, Integer> wordCounts = new HashMap<>();
-
-        // Logique pour mapper les mots du chunk et compter les occurrences
-        String[] words = chunk.split("\\s+"); // Supposons que les mots sont séparés par des espaces
+        String[] words = chunk.split("\\s+");
 
         // Expression régulière pour exclure les ponctuations
         Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
