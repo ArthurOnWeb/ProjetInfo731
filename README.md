@@ -1,13 +1,36 @@
 # ProjetInfo731
 
-This Java project demonstrates a simple MapReduce-style word count. It splits a text file into chunks, maps occurrences of each word, and reduces the results using multiple threads.
+This project demonstrates a simple **Map/Reduce** implementation for counting words in a text file. It splits the text into blocks, processes each block in parallel, then aggregates the results.
 
-## Usage
+## Prerequisites
 
-Compile and run the `Main` class. The program reads `lesmiserables.txt` from the `src/Ressources` directory, processes the text, and outputs the word counts.
+- Java 8 or higher
 
-The full `lesmiserables.txt` file is quite large (~74&nbsp;MB). If you don't need the entire text you can use the lighter `lesmiserablespetit.txt` sample or store the full file outside of the repository and adjust the path accordingly.
+## Compilation
+
+Run the following command from the repository root:
+
+```bash
+javac src/*.java
+```
+
+## Execution
+
+Start the application with:
+
+```bash
+java -cp src Main
+```
+
+By default the program reads `lesmiserables.txt` from `src/Ressources` and prints the dictionary of counted words.
+
+### Sample output
+
+```
+[{=375130, frowning=70, CochepaiUe=70, coupable=280, ...}
+Execution time: XXXX milliseconds
+```
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+This project is distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
