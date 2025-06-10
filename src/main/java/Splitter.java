@@ -8,7 +8,7 @@ public class Splitter {
     public static ArrayList<String> splitText(String nomFichier, int nombreElements) {
         ArrayList<String> blocs = new ArrayList<>();
         StringBuilder texteComplet = new StringBuilder();
-        String cheminFichier = "src/Ressources/" + nomFichier;
+        String cheminFichier = "src/main/resources/" + nomFichier;
 
         try (BufferedReader br = new BufferedReader(new FileReader(cheminFichier))) {
             String ligne;

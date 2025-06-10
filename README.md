@@ -11,7 +11,7 @@ This project demonstrates a simple **Map/Reduce** implementation for counting wo
 Run the following command from the repository root:
 
 ```bash
-javac src/*.java
+mvn compile
 ```
 
 ## Execution
@@ -19,10 +19,10 @@ javac src/*.java
 Start the application with:
 
 ```bash
-java -cp src Main
+mvn exec:java
 ```
 
-By default the program reads `lesmiserables.txt` from `src/Ressources` and prints the dictionary of counted words.
+By default the program reads `lesmiserables.txt` from `src/main/resources` and prints the dictionary of counted words.
 
 ### Sample output
 
