@@ -31,6 +31,15 @@ By default the program reads `lesmiserables.txt` from `src/main/resources` and p
 Execution time: XXXX milliseconds
 ```
 
+## Tests
+
+JUnit tests validate the `MapTask`, `ReduceTask` and `Splitter` classes.
+Run them with:
+
+```bash
+mvn test
+```
+
 ## License
 
 This project is distributed under the MIT License. See the [LICENSE](LICENSE) file for details.
