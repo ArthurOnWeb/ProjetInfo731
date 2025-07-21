@@ -1,16 +1,25 @@
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Entry point of the Map/Reduce word count example.
+ */
 public class Main {
+
+    /**
+     * Launches the program with a fixed number of map and reduce tasks.
+     *
+     * @param args ignored
+     */
     public static void main(String[] args) {
-        // Enregistre le temps de début
+        // Record the start time
         long startTime = System.currentTimeMillis();
 
         try {
             String text = "lesmiserables.txt";
             CoordinateurNode coordinateur = new CoordinateurNode();
 
-            // Définir le nombre de MapTask et ReduceTask souhaité
+            // Define the number of MapTask and ReduceTask instances
             int numMapTasks = 4;
             int numReduceTasks = numMapTasks;
 
@@ -26,16 +35,15 @@ public class Main {
 
             ArrayList<Map<String, Integer>> results = coordinateur.aggregateResults(resultsReducing);
 
-            // Afficher le dictionnaire
+            // Display the dictionary
             System.out.println(results);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            // Enregistre le temps de fin
+            // Record the end time
             long endTime = System.currentTimeMillis();
-
-            // Calcule et affiche la différence
-            System.out.println("Temps d'exécution: " + (endTime - startTime) + " millisecondes");
+            // Compute and print the duration
+            System.out.println("Execution time: " + (endTime - startTime) + " milliseconds");
         }
     }
 

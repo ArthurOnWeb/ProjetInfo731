@@ -2,8 +2,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
+/**
+ * Unit tests for {@link ReduceTask}.
+ */
 public class ReduceTaskTest {
     @Test
+    /**
+     * Ensures that the reduce phase returns identical counts for a single map.
+     */
     public void testExecuteReturnsSameCounts() {
         Map<String, Integer> partial = new HashMap<>();
         partial.put("a", 1);

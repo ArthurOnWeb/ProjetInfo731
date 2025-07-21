@@ -2,6 +2,25 @@
 
 This project demonstrates a simple **Map/Reduce** implementation for counting words in a text file. It splits the text into blocks, processes each block in parallel, then aggregates the results.
 
+## Architecture overview
+
+The program follows a classic Map/Reduce pattern implemented with Java threads:
+
+1. **Splitting** – The `Splitter` class reads an input file and divides it
+   into a configurable number of text chunks.
+2. **Mapping** – Each chunk is processed by a `MapTask` instance. The
+   `CoordinateurNode` starts one thread per chunk, each computing a map of word
+   counts.
+3. **Reducing** – Once mapping is complete, the coordinator assigns the partial
+   maps to `ReduceTask` instances (also executed in separate threads). Each
+   reduce task aggregates its input map.
+4. **Aggregation** – The coordinator finally combines all reduced maps into a
+   single dictionary containing the total counts.
+
+Threads are created directly using `new Thread(...)` and synchronized lists are
+used to collect intermediate results. This lightweight approach keeps the
+implementation simple while still showcasing how map and reduce phases interact.
+
 ## Prerequisites
 
 - Java 8 or higher
