@@ -3,8 +3,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 import java.io.*;
 
+/**
+ * Unit tests for {@link Splitter}.
+ */
 public class SplitterTest {
     @Test
+    /**
+     * Verifies that the text file is split into the expected number of blocks.
+     */
     public void testSplitTextDividesFile() throws Exception {
         ArrayList<String> blocks = Splitter.splitText("discours.txt", 3);
         assertEquals(3, blocks.size());

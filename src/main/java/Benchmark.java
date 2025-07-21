@@ -1,9 +1,19 @@
 import java.util.ArrayList;
 import java.util.Map;
 
+/**
+ * Simple benchmarking tool used to measure the execution time of the program
+ * for different numbers of tasks.
+ */
 public class Benchmark {
+
+    /**
+     * Launches a series of benchmarks with an increasing number of tasks.
+     *
+     * @param args ignored
+     */
     public static void main(String[] args) {
-        // Effectue un benchmark avec différents nombres de MapTask et ReduceTask
+        // Run benchmarks with different numbers of MapTask and ReduceTask
         runBenchmark(1);
         runBenchmark(2);
         runBenchmark(3);
@@ -22,8 +32,13 @@ public class Benchmark {
         runBenchmark(16);
     }
 
+    /**
+     * Executes a benchmark iteration with the provided number of map/reduce tasks.
+     *
+     * @param numMapTasks number of tasks to use for the benchmark
+     */
     private static void runBenchmark(int numMapTasks) {
-        // Enregistre le temps de début
+        // Record the start time
         long startTime = System.currentTimeMillis();
 
         try {
@@ -43,11 +58,10 @@ public class Benchmark {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            // Enregistre le temps de fin
+            // Record the end time
             long endTime = System.currentTimeMillis();
-
-            // Calcule et affiche la différence
-            System.out.println("Temps d'exécution: " + (endTime - startTime) + " millisecondes pour "+ (numMapTasks) +"Mapper et Reducer");
+            // Compute and print the duration
+            System.out.println("Execution time: " + (endTime - startTime) + " milliseconds for " + numMapTasks + " mapper/reducer pair(s)");
             System.out.println("--------------");
         }
     }

@@ -2,15 +2,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Central component coordinating the map and reduce phases.
+ * <p>
+ * It assigns tasks to threads, waits for their completion and finally aggregates
+ * all intermediate results.
+ */
 public class CoordinateurNode {
+    /** Blocks of text on which the map phase operates. */
     private ArrayList<String> textChunks;
+    /** Collection of map tasks. */
     private ArrayList<MapTask> mapTasks;
+    /** Collection of reduce tasks. */
     private ArrayList<ReduceTask> reduceTasks;
 
+    /**
+     * Sets the text chunks to be processed.
+     *
+     * @param textChunks list of blocks created by {@link Splitter}
+     */
     public void setTextChunks(ArrayList<String> textChunks) {
         this.textChunks = textChunks;
     }
 
+    /**
+     * Creates and stores the requested number of map tasks.
+     *
+     * @param numMapTasks how many tasks to instantiate
+     */
     public void assignMapTasks(int numMapTasks) {
         mapTasks = new ArrayList<>();
         for (int i = 0; i < numMapTasks; i++) {
@@ -19,6 +38,12 @@ public class CoordinateurNode {
         }
     }
 
+    /**
+     * Executes each map task on a separate thread.
+     *
+     * @return a list of maps containing partial word counts
+     * @throws InterruptedException if a thread is interrupted while waiting
+     */
     public ArrayList<Map<String, Integer>> executeMapTasks() throws InterruptedException {
         int numMapTasks = mapTasks.size();
         ArrayList<Map<String, Integer>> results = new ArrayList<>();
@@ -33,15 +58,13 @@ public class CoordinateurNode {
 
                 synchronized (results) {
                     results.add(result);
-                    //System.out.println("MapTask " + index % numMapTasks + " a traité le chunk : " + chunk);
-                    //System.out.println("Résultat partiel : " + result);
                 }
             });
             threads.add(thread);
             thread.start();
         }
 
-        // Attendre que tous les threads aient terminé
+        // Wait for all threads to finish
         for (Thread thread : threads) {
             thread.join();
         }
@@ -49,6 +72,11 @@ public class CoordinateurNode {
         return results;
     }
 
+    /**
+     * Creates and stores the requested number of reduce tasks.
+     *
+     * @param numReduceTasks number of reduce tasks to instantiate
+     */
     public void assignReduceTasks(int numReduceTasks) {
         reduceTasks = new ArrayList<>();
         for (int i = 0; i < numReduceTasks; i++) {
@@ -57,6 +85,13 @@ public class CoordinateurNode {
         }
     }
 
+    /**
+     * Executes the reduce tasks in parallel.
+     *
+     * @param mapResults intermediate results produced by the map phase
+     * @return a list containing partial reductions
+     * @throws InterruptedException if a thread is interrupted while waiting
+     */
     public ArrayList<Map<String, Integer>> executeReduceTasks(ArrayList<Map<String, Integer>> mapResults) throws InterruptedException {
         int numReduceTasks = reduceTasks.size();
         ArrayList<Map<String, Integer>> finalResults = new ArrayList<>();
@@ -71,15 +106,13 @@ public class CoordinateurNode {
 
                 synchronized (finalResults) {
                     finalResults.add(partialResult);
-                    //System.out.println("ReduceTask " + index % numReduceTasks + " a traité les résultats partiels : " + mapResult);
-                    //System.out.println("Résultat partiel après réduction : " + partialResult);
                 }
             });
             threads.add(thread);
             thread.start();
         }
 
-        // Attendre que tous les threads aient terminé
+        // Wait for all threads to finish
         for (Thread thread : threads) {
             thread.join();
         }
@@ -87,6 +120,12 @@ public class CoordinateurNode {
         return finalResults;
     }
 
+    /**
+     * Aggregates the results of all reduce tasks into a single map.
+     *
+     * @param reduceResults the partial results produced by each reduce task
+     * @return a list containing one aggregated map
+     */
     public ArrayList<Map<String, Integer>> aggregateResults(ArrayList<Map<String, Integer>> reduceResults) {
         ArrayList<Map<String, Integer>> finalResults = new ArrayList<>();
         Map<String, Integer> aggregatedResults = new HashMap<>();

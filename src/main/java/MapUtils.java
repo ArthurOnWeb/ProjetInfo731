@@ -1,4 +1,15 @@
+/**
+ * Utility methods for manipulating {@code Map} instances used in the
+ * Map/Reduce workflow.
+ */
 public class MapUtils {
+
+    /**
+     * Aggregates a list of maps by summing the counts of identical keys.
+     *
+     * @param maps the collection of maps produced by the map phase
+     * @return a single map containing the aggregated counts
+     */
     public static java.util.Map<String, Integer> aggregateMaps(java.util.ArrayList<java.util.Map<String, Integer>> maps) {
         java.util.Map<String, Integer> aggregatedMap = new java.util.HashMap<>();
         for (java.util.Map<String, Integer> map : maps) {
@@ -11,6 +22,13 @@ public class MapUtils {
         return aggregatedMap;
     }
 
+    /**
+     * Splits a map into several smaller maps.
+     *
+     * @param inputMap the original map
+     * @param numParts number of parts to create
+     * @return a list containing the smaller maps
+     */
     public static java.util.ArrayList<java.util.Map<String, Integer>> divideMap(java.util.Map<String, Integer> inputMap, int numParts) {
         java.util.ArrayList<java.util.Map<String, Integer>> dividedMaps = new java.util.ArrayList<>();
         int sizePerPart = (int) Math.ceil((double) inputMap.size() / numParts);

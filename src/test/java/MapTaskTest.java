@@ -2,8 +2,14 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 
+/**
+ * Unit tests for {@link MapTask}.
+ */
 public class MapTaskTest {
     @Test
+    /**
+     * Ensures that words are correctly counted.
+     */
     public void testExecuteCountsWords() {
         MapTask mapTask = new MapTask();
         Map<String, Integer> result = mapTask.execute("Hello world Hello");
@@ -15,6 +21,9 @@ public class MapTaskTest {
     }
 
     @Test
+    /**
+     * Ensures that punctuation characters are removed before counting.
+     */
     public void testExecuteRemovesPunctuation() {
         MapTask mapTask = new MapTask();
         Map<String, Integer> result = mapTask.execute("Bonjour, monde! Bonjour?");
