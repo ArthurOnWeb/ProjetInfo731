@@ -15,7 +15,7 @@ public class MapTaskTest {
         Map<String, Integer> result = mapTask.execute("Hello world Hello");
 
         Map<String, Integer> expected = new HashMap<>();
-        expected.put("Hello", 2);
+        expected.put("hello", 2);
         expected.put("world", 1);
         assertEquals(expected, result);
     }
@@ -29,8 +29,19 @@ public class MapTaskTest {
         Map<String, Integer> result = mapTask.execute("Bonjour, monde! Bonjour?");
 
         Map<String, Integer> expected = new HashMap<>();
-        expected.put("Bonjour", 2);
+        expected.put("bonjour", 2);
         expected.put("monde", 1);
         assertEquals(expected, result);
+    }
+
+    @Test
+    /**
+     * Ensures that empty tokens are ignored after cleaning.
+     */
+    public void testExecuteSkipsEmptyTokens() {
+        MapTask mapTask = new MapTask();
+        Map<String, Integer> result = mapTask.execute("  !!!  ");
+
+        assertTrue(result.isEmpty());
     }
 }

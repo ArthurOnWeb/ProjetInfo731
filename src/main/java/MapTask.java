@@ -20,14 +20,16 @@ public class MapTask {
         Map<String, Integer> wordCounts = new HashMap<>();
         String[] words = chunk.split("\\s+");
 
-        // Regular expression used to remove punctuation
+        // Regular expression used to remove punctuation characters
         Pattern pattern = Pattern.compile("[^a-zA-Z0-9]");
 
         for (String word : words) {
-            // Remove punctuation characters
-            String cleanedWord = pattern.matcher(word).replaceAll("");
+            // Remove punctuation and normalize to lowercase
+            String cleanedWord = pattern.matcher(word).replaceAll("").toLowerCase();
 
-            wordCounts.put(cleanedWord, wordCounts.getOrDefault(cleanedWord, 0) + 1);
+            if (!cleanedWord.isEmpty()) {
+                wordCounts.put(cleanedWord, wordCounts.getOrDefault(cleanedWord, 0) + 1);
+            }
         }
 
         return wordCounts;
