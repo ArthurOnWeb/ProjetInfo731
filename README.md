@@ -9,17 +9,17 @@ The program follows a classic Map/Reduce pattern implemented with Java threads:
 1. **Splitting** – The `Splitter` class reads an input file and divides it
    into a configurable number of text chunks.
 2. **Mapping** – Each chunk is processed by a `MapTask` instance. The
-   `CoordinateurNode` starts one thread per chunk, each computing a map of word
-   counts.
+   `CoordinateurNode` submits tasks to a thread pool, each computing a map of
+   word counts in parallel.
 3. **Reducing** – Once mapping is complete, the coordinator assigns the partial
-   maps to `ReduceTask` instances (also executed in separate threads). Each
+   maps to `ReduceTask` instances submitted to the same pool. Each
    reduce task aggregates its input map.
 4. **Aggregation** – The coordinator finally combines all reduced maps into a
    single dictionary containing the total counts.
 
-Threads are created directly using `new Thread(...)` and synchronized lists are
-used to collect intermediate results. This lightweight approach keeps the
-implementation simple while still showcasing how map and reduce phases interact.
+Tasks are executed using a fixed-size `ExecutorService` which manages a pool of
+worker threads. This approach scales better than manually creating threads and
+ensures that executors are properly shut down once all jobs finish.
 
 ## Prerequisites
 
