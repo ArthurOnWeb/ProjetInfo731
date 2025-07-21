@@ -10,7 +10,9 @@ The program follows a classic Map/Reduce pattern implemented with Java threads:
    into a configurable number of text chunks.
 2. **Mapping** – Each chunk is processed by a `MapTask` instance. The
    `CoordinateurNode` submits tasks to a thread pool, each computing a map of
-   word counts in parallel.
+   word counts in parallel. The mapper normalizes words to lower case and
+   ignores empty tokens so counts are consistent regardless of input case or
+   punctuation.
 3. **Reducing** – Once mapping is complete, the coordinator assigns the partial
    maps to `ReduceTask` instances submitted to the same pool. Each
    reduce task aggregates its input map.
