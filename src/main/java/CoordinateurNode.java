@@ -1,6 +1,12 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Central component coordinating the map and reduce phases.
@@ -47,26 +53,37 @@ public class CoordinateurNode {
     public ArrayList<Map<String, Integer>> executeMapTasks() throws InterruptedException {
         int numMapTasks = mapTasks.size();
         ArrayList<Map<String, Integer>> results = new ArrayList<>();
-        ArrayList<Thread> threads = new ArrayList<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numMapTasks);
+        ArrayList<Future<Map<String, Integer>>> futures = new ArrayList<>();
 
         for (int i = 0; i < textChunks.size(); i++) {
             final int index = i;
-            Thread thread = new Thread(() -> {
+            Callable<Map<String, Integer>> callable = () -> {
                 String chunk = textChunks.get(index);
                 MapTask mapTask = mapTasks.get(index % numMapTasks);
-                Map<String, Integer> result = mapTask.execute(chunk);
-
-                synchronized (results) {
-                    results.add(result);
-                }
-            });
-            threads.add(thread);
-            thread.start();
+                return mapTask.execute(chunk);
+            };
+            futures.add(executor.submit(callable));
         }
 
-        // Wait for all threads to finish
-        for (Thread thread : threads) {
-            thread.join();
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(1, TimeUnit.HOURS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+
+        for (Future<Map<String, Integer>> future : futures) {
+            try {
+                results.add(future.get());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
         return results;
@@ -95,26 +112,37 @@ public class CoordinateurNode {
     public ArrayList<Map<String, Integer>> executeReduceTasks(ArrayList<Map<String, Integer>> mapResults) throws InterruptedException {
         int numReduceTasks = reduceTasks.size();
         ArrayList<Map<String, Integer>> finalResults = new ArrayList<>();
-        ArrayList<Thread> threads = new ArrayList<>();
+
+        ExecutorService executor = Executors.newFixedThreadPool(numReduceTasks);
+        ArrayList<Future<Map<String, Integer>>> futures = new ArrayList<>();
 
         for (int i = 0; i < mapResults.size(); i++) {
             final int index = i;
-            Thread thread = new Thread(() -> {
+            Callable<Map<String, Integer>> callable = () -> {
                 Map<String, Integer> mapResult = mapResults.get(index);
                 ReduceTask reduceTask = reduceTasks.get(index % numReduceTasks);
-                Map<String, Integer> partialResult = reduceTask.execute(mapResult);
-
-                synchronized (finalResults) {
-                    finalResults.add(partialResult);
-                }
-            });
-            threads.add(thread);
-            thread.start();
+                return reduceTask.execute(mapResult);
+            };
+            futures.add(executor.submit(callable));
         }
 
-        // Wait for all threads to finish
-        for (Thread thread : threads) {
-            thread.join();
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(1, TimeUnit.HOURS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+            throw e;
+        }
+
+        for (Future<Map<String, Integer>> future : futures) {
+            try {
+                finalResults.add(future.get());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }
 
         return finalResults;
